@@ -1,22 +1,36 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using TaskManagerIdentity.Data;
+using TaskManagerIdentity.Models;
 
 namespace TaskManagerIdentity.Controllers
 {
     public class TaskListController : Controller
     {
-        public IActionResult List()
+        private readonly ApplicationDbContext _db;
+
+        public TaskListController(ApplicationDbContext db)
         {
-            return View();
+            _db = db;
         }
 
+        [Authorize]
+        public IActionResult List()
+        {
+            IEnumerable<TaskList> objList = _db.TaskList;
+            return View(objList);
+        }
+
+        [Authorize]
         public IActionResult Create()
         {
             return View();
         }
+        [Authorize]
         public IActionResult Update()
         {
             return View();
