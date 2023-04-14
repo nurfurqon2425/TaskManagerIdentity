@@ -1,5 +1,15 @@
 ﻿@model IEnumerable<TaskManagerIdentity.Models.TaskList>
+@{ 
+    Pager pager = new Pager();
 
+    int pageNo = 0;
+
+    if(ViewBag.Pager != null)
+    {
+        pager = ViewBag.Pager;
+        pageNo = pager.CurrentPage;
+    }
+}
 
 
 <div class="container p-3">
@@ -16,37 +26,45 @@
 
     <br /><br />
 
-    @if (Model.Count() > 0)
-    {
-        <table class="table table-bordered table-striped" style="width:100%">
-            <thead>
-                <tr>
-                    <th>
-                        Task Name
-                    </th>
-                    <th>
-                        Priority
-                    </th>
-                    <th>
-                        Active
-                    </th>
-                    <th>
-                        Start Time
-                    </th>
-                    <th>
-                        End Time
-                    </th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var obj in Model)
-                {
+    <div class="col-4 p-0 justify-content-end">
+        <form asp-controller="TaskList" asp-action="List">
+            <span class="btn-group">
+                <input class="form-control" type="text" name="SearchText" value="@pager.SearchText" placeholder="Search Key" />
+                <input class="p-1 ml-2 btn btn-sm btn-info" type="submit" name="SearchText" value="Search" />
+            </span>
+
+        </form>
+    </div>
+    <table class="table table-bordered table-striped" style="width:100%">
+        <thead>
+            <tr>
+                <th>
+                    Task Name
+                </th>
+                <th>
+                    Priority
+                </th>
+
+                <th>
+                    Start Time
+                </th>
+                <th>
+                    End Time
+                </th>
+                <th>
+                    Active
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var obj in Model)
+            {
                 <tr>
                     <td width="16%">@obj.TaskName</td>
                     <td width="16%">@obj.Priority</td>
-                    <td width="16%">@obj.Active</td>
                     <td width="16%">@obj.StartTime</td>
                     <td width="16%">@obj.EndTime</td>
+                    <td width="16%">@obj.Active</td>
                     <td class="text-center">
                         <div class="w-75 btn-group" role="group">
                             <a asp-controller="TaskList" asp-route-Id="@obj.Id" asp-action="Edit" class="btn btn-primary mx-2">
@@ -58,13 +76,52 @@
                         </div>
                     </td>
                 </tr>
+            }
+        </tbody>
+    </table>
+
+    <div class="container">
+        @if (pager.TotalPages > 0)
+        {
+            <ul class="pagination justify-content-end">
+                @if (pager.CurrentPage > 1)
+                {
+                    <li class="page-item">
+                        <a class="page-link" asp-controller="TaskList" asp-action="List" asp-route-pg="1">First</a>
+                    </li>
+                    <li>
+                        <a class="page-link" asp-controller="TaskList" asp-action="List" asp-route-pg="@(pager.CurrentPage-1)">Previous</a>
+                    </li>
                 }
-            </tbody>
-        </table>
+
+                @for (var pge = pager.StartPage; pge <= pager.EndPage; pge++)
+                {
+                    <li class="page-item @(pge == pager.CurrentPage ? "active" : "")">
+                        <a class="page-link" asp-controller="TaskList" asp-action="List" asp-route-pg="@pge"> @pge  </a>
+                    </li>
+                }
+
+                @if (pager.CurrentPage < pager.TotalPages)
+                {
+                    <li class="page-item">
+                        <a class="page-link" asp-controller="TaskList" asp-action="List" asp-route-pg="@(pager.CurrentPage+1)">Next</a>
+                    </li>
+                    <li>
+                        <a class="page-link" asp-controller="TaskList" asp-action="List" asp-route-pg="@(pager.TotalPages)">Last</a>
+                    </li>
+                }
+
+            </ul>
+        }
+    </div>
+
+    @*@if (Model.Count() > 0)
+    {
+
     }
     else
     {
         <p>No Task exists.</p>
-    }
+    }*@
 
 </div>
