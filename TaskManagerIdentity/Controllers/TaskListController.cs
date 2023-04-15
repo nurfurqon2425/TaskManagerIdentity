@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,18 +14,33 @@ namespace TaskManagerIdentity.Controllers
     public class TaskListController : Controller
     {
         private readonly ApplicationDbContext _db;
-
         private readonly IConfiguration _configuration;
+        //private readonly int _pageSize;
+        //private readonly int _pageSpan;
+        //private readonly int _startPageSpan;
+        //private readonly int _endPageSpan;
 
-        public TaskListController(IConfiguration configuration)
-        {
-            _configuration = configuration;
-        }
+        //public TaskListController(IOptions<MySettings> mySettings)
+        //{
+        //    _pageSize = mySettings.Value.PageSize;
+        //    _pageSpan = mySettings.Value.PageSpan;
+        //    _startPageSpan = mySettings.Value.StartPageSpan;
+        //    _endPageSpan = mySettings.Value.EndPageSpan;
+        //}
 
+        //public TaskListController(ApplicationDbContext db, IOptions<MySettings> mySettings)
+        //{
+        //    _db = db;
+        //    _pageSize = mySettings.Value.PageSize;
+        //    _pageSpan = mySettings.Value.PageSpan;
+        //    _startPageSpan = mySettings.Value.StartPageSpan;
+        //    _endPageSpan = mySettings.Value.EndPageSpan;
+        //}
 
-        public TaskListController(ApplicationDbContext db)
+        public TaskListController(ApplicationDbContext db, IConfiguration configuration)
         {
             _db = db;
+            _configuration = configuration;
         }
 
         [Authorize]
@@ -41,7 +57,8 @@ namespace TaskManagerIdentity.Controllers
                 objList = _db.TaskList;
             }
 
-            int pageSize = _configuration.GetValue<int>("PageSize");
+            int pageSize = _configuration.GetValue<int>("MySettings:PageSize");
+            //int pageSize = _pageSize;
             if (pg < 1)
                 pg = 1;
 
@@ -51,7 +68,7 @@ namespace TaskManagerIdentity.Controllers
 
             IEnumerable<TaskList> retTaskList = objList.Skip(recSkip).Take(pageSize);
 
-            Pager pager = new Pager(recsCount, pg, pageSize);
+            Pager pager = new Pager(recsCount, pg, pageSize, _configuration);
 
             this.ViewBag.Pager = pager;
 

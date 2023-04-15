@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,23 +17,16 @@ namespace TaskManagerIdentity.Models
         public int StartPage { get; set; }
         public int EndPage { get; set; }
 
-        private readonly IConfiguration _configuration;
-
-        public Pager(IConfiguration configuration)
-        {
-            _configuration = configuration;
-        }
-
         public Pager()
         {
 
         }
 
-        public Pager(int totalItems, int page, int pageSize)
+        public Pager(int totalItems, int page, int pageSize, IConfiguration configuration)
         {
-            int pageSpan = _configuration.GetValue<int>("PageSpan");
-            int startPageSpan = _configuration.GetValue<int>("StartPageSpan");
-            int endPageSpan = _configuration.GetValue<int>("EndPageSpan");
+            int pageSpan = configuration.GetValue<int>("MySettings:PageSpan");
+            int startPageSpan = configuration.GetValue<int>("MySettings:StartPageSpan");
+            int endPageSpan = configuration.GetValue<int>("MySettings:EndPageSpan");
 
             int totalPages = (int)Math.Ceiling((decimal)totalItems / (decimal)pageSize);
             int currentPage = page;
