@@ -19,7 +19,6 @@ namespace TaskManagerIdentity.Models
 
         public Pager()
         {
-
         }
 
         public Pager(int totalItems, int page, int pageSize, IConfiguration configuration)

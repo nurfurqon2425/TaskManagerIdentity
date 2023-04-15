@@ -1,5 +1,6 @@
 ﻿@model IEnumerable<TaskManagerIdentity.Models.TaskList>
 
+
 @{ 
     Pager pager = new Pager();
 
@@ -33,24 +34,53 @@
                 <input class="form-control" type="text" name="SearchText" value="@pager.SearchText" placeholder="Search Key" />
                 <input class="p-1 ml-2 btn btn-sm btn-info" type="submit" name="SearchText" value="Search" />
             </span>
-
         </form>
     </div>
     <table class="table table-bordered table-striped" style="width:100%">
         <thead>
             <tr>
-                <th>
-                    Task Name
+                <th>@if (string.IsNullOrEmpty(ViewData["nameOrder"].ToString())) 
+                    { 
+                        <i class="fa-solid fa-sort-down"></i>
+                    }
+                    else 
+                    { 
+                        <i class="fa-solid fa-sort-up"></i>
+                    }
+                    <a asp-controller="TaskList" asp-action="List" asp-route-sortOrder="@ViewData["nameOrder"]">Task Name</a>
                 </th>
                 <th>
-                    Priority
+                    @if (ViewData["priorityOrder"].ToString() == "priority")
+                    {
+                        <i class="fa-solid fa-sort-down"></i>
+                    }
+                    else
+                    {
+                        <i class="fa-solid fa-sort-up"></i>
+                    }
+                    <a asp-controller="TaskList" asp-action="List" asp-route-sortOrder="@ViewData["priorityOrder"]">Priority</a>
                 </th>
-
                 <th>
-                    Start Time
+                    @if (ViewData["startDateOrder"].ToString() == "startDate")
+                    {
+                        <i class="fa-solid fa-sort-down"></i>
+                    }
+                    else
+                    {
+                        <i class="fa-solid fa-sort-up"></i>
+                    }
+                    <a asp-controller="TaskList" asp-action="List" asp-route-sortOrder="@ViewData["startDateOrder"]">Start Time</a>
                 </th>
                 <th>
-                    End Time
+                    @if (ViewData["endDateOrder"].ToString() == "endDate")
+                    {
+                        <i class="fa-solid fa-sort-down"></i>
+                    }
+                    else
+                    {
+                        <i class="fa-solid fa-sort-up"></i>
+                    }
+                    <a asp-controller="TaskList" asp-action="List" asp-route-sortOrder="@ViewData["endDateOrder"]">End Time</a>
                 </th>
                 <th>
                     Active

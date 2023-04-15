@@ -15,27 +15,7 @@ namespace TaskManagerIdentity.Controllers
     {
         private readonly ApplicationDbContext _db;
         private readonly IConfiguration _configuration;
-        //private readonly int _pageSize;
-        //private readonly int _pageSpan;
-        //private readonly int _startPageSpan;
-        //private readonly int _endPageSpan;
-
-        //public TaskListController(IOptions<MySettings> mySettings)
-        //{
-        //    _pageSize = mySettings.Value.PageSize;
-        //    _pageSpan = mySettings.Value.PageSpan;
-        //    _startPageSpan = mySettings.Value.StartPageSpan;
-        //    _endPageSpan = mySettings.Value.EndPageSpan;
-        //}
-
-        //public TaskListController(ApplicationDbContext db, IOptions<MySettings> mySettings)
-        //{
-        //    _db = db;
-        //    _pageSize = mySettings.Value.PageSize;
-        //    _pageSpan = mySettings.Value.PageSpan;
-        //    _startPageSpan = mySettings.Value.StartPageSpan;
-        //    _endPageSpan = mySettings.Value.EndPageSpan;
-        //}
+        
 
         public TaskListController(ApplicationDbContext db, IConfiguration configuration)
         {
@@ -44,11 +24,15 @@ namespace TaskManagerIdentity.Controllers
         }
 
         [Authorize]
-        public IActionResult List(string SearchText = "", int pg = 1)
+        public IActionResult List(string sortOrder, string SearchText = "", int pg = 1)
         {
             IEnumerable<TaskList> objList;
+            ViewData["nameOrder"] = string.IsNullOrEmpty(sortOrder) ? "nameDesc" : "";
+            ViewData["priorityOrder"] = sortOrder == "priority" ? "priorityDesc" : "priority";
+            ViewData["startDateOrder"] = sortOrder == "startDate" ? "startDateDesc" : "startDate";
+            ViewData["endDateOrder"] = sortOrder == "endDate" ? "endDateDesc" : "endDate";
 
-            if(SearchText != "" && SearchText != null)
+            if (SearchText != "" && SearchText != null)
             {
                 objList = _db.TaskList.Where(p => p.TaskName.Contains(SearchText));
             }
@@ -57,8 +41,37 @@ namespace TaskManagerIdentity.Controllers
                 objList = _db.TaskList;
             }
 
+            switch(sortOrder)
+            {
+                case "endDateDesc":
+                    objList = objList.OrderByDescending(p => p.EndTime);
+                    break;
+                case "endDate":
+                    objList = objList.OrderBy(p => p.EndTime);
+                    break;
+                case "startDateDesc":
+                    objList = objList.OrderByDescending(p => p.StartTime);
+                    break;
+                case "startDate":
+                    objList = objList.OrderBy(p => p.StartTime);
+                    break;
+                case "priorityDesc":
+                    objList = objList.OrderByDescending(p => p.Priority);
+                    break;
+                case "priority":
+                    objList = objList.OrderBy(p => p.Priority);
+                    break;
+                case "nameDesc":
+                    objList = objList.OrderByDescending(p => p.TaskName);
+                    break;
+                default:
+                    objList = objList.OrderBy(p => p.TaskName);
+                    break;
+
+            }
+
             int pageSize = _configuration.GetValue<int>("MySettings:PageSize");
-            //int pageSize = _pageSize;
+
             if (pg < 1)
                 pg = 1;
 
