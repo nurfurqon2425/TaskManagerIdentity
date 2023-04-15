@@ -1,6 +1,7 @@
 ﻿@model TaskManagerIdentity.Models.TaskList
 
 <form method="post">
+    <input asp-for="Id" hidden />
     <div class="border p-3">
         <div class="form-group row">
             <h2 class="text-info pl-3">Edit Application Type</h2>
@@ -16,12 +17,49 @@
                 </div>
             </div>
             <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="Priority"></label>
+                </div>
+                <div class="col-8">
+                    <input asp-for="Priority" class="form-control" />
+                    <span asp-validation-for="Priority" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="StartTime"></label>
+                </div>
+                <div class="col-8">
+                    <input asp-for="StartTime" class="datepicker form-control" />
+                    <span asp-validation-for="StartTime" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="EndTime"></label>
+                </div>
+                <div class="col-8">
+                    <input asp-for="EndTime" class="datepicker form-control" />
+                    <span asp-validation-for="EndTime" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-5">
+
+                </div>
+                <div class="col-2">
+                    <input asp-for="Active" class="form-check-input" type="checkbox" />
+                    <span asp-validation-for="Active" class="text-danger"></span>
+                    <label asp-for="Active"></label>
+                </div>
+            </div>
+            <div class="form-group row">
                 <div class="col-8 offset-4 row">
                     <div class="col">
                         <input type="submit" class="btn btn-info w-100" value="Update" />
                     </div>
                     <div class="col">
-                        <a asp-action="Index" class="btn btn-success w-100">
+                        <a asp-action="List" class="btn btn-success w-100">
                             <i class="fa-solid fa-right-from-bracket"></i> Back
                         </a>
                     </div>

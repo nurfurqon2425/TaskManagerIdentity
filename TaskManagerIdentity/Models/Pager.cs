@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Configuration;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -15,19 +16,29 @@ namespace TaskManagerIdentity.Models
         public int StartPage { get; set; }
         public int EndPage { get; set; }
 
+        private readonly IConfiguration _configuration;
+
+        public Pager(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
 
         public Pager()
         {
 
         }
 
-        public Pager(int totalItems, int page, int pageSize = 5)
+        public Pager(int totalItems, int page, int pageSize)
         {
+            int pageSpan = _configuration.GetValue<int>("PageSpan");
+            int startPageSpan = _configuration.GetValue<int>("StartPageSpan");
+            int endPageSpan = _configuration.GetValue<int>("EndPageSpan");
+
             int totalPages = (int)Math.Ceiling((decimal)totalItems / (decimal)pageSize);
             int currentPage = page;
 
-            int startPage = currentPage - 2;
-            int endPage = currentPage + 2;
+            int startPage = currentPage - startPageSpan;
+            int endPage = currentPage + endPageSpan;
 
             if(startPage <= 0)
             {
@@ -38,9 +49,9 @@ namespace TaskManagerIdentity.Models
             if(endPage > totalPages)
             {
                 endPage = totalPages;
-                if(endPage > 5)
+                if(endPage > pageSpan)
                 {
-                    startPage = endPage - 4;
+                    startPage = endPage - pageSpan + 1;
                 }
             }
 
