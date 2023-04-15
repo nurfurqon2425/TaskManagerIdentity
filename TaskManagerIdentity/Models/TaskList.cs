@@ -18,7 +18,9 @@ namespace TaskManagerIdentity.Models
         public int Priority { get; set; }
         [Required]
         public bool Active { get; set; }
+        [Required]
         public DateTime StartTime { get; set; }
+        [Required]
         public DateTime EndTime { get; set; }
 
     }

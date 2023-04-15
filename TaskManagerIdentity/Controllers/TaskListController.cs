@@ -85,7 +85,7 @@ namespace TaskManagerIdentity.Controllers
 
             this.ViewBag.Pager = pager;
 
-            return View(objList);
+            return View(retTaskList);
         }
 
         //GET - CREATE
